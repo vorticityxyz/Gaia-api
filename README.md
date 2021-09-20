@@ -21,6 +21,8 @@ python3 -m pip install protobuf
 ```bash
 python3 -m pip install -U matplotlib
 ```
+* [segyio](https://github.com/equinor/segyio) (optional) - Open source segy to numpy file converter.
+
 
 ## Installation
 1. Clone the public git repository on to your working directory
