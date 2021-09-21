@@ -27,7 +27,7 @@ BF_SANILTY_FILE = "_bfparameters.npy"
 
 #SERVER_ADDRESS = 'localhost:8888'
 #SERVER_ADDRESS = '73.222.114.117:8888'
-SERVER_ADDRESS = '35.193.176.194:443'
+SERVER_ADDRESS = '34.71.232.136:443'
 
 def get_file_chunks(filename):
     with open(filename, 'rb') as f:
