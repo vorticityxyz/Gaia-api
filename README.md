@@ -25,12 +25,12 @@ python3 -m pip install -U matplotlib
 
 
 ## Installation
-1. Clone the public git repository on to your working directory
+1. Clone the public git repository to your working directory
 ```bash
 git clone https://github.com/VorticityXYZ/GaiaAPI /working-directory
 ```
-2. Get a token and certificate file by contacting Vorticity.
-3. Copy these files to the working directory.
+2. Get in touch with Vorticity (<hello@vorticity.xyz>) for a token and certificate file. 
+3. Copy these two files to your working directory.
 
 ## Usage
 ### Examples
@@ -38,9 +38,10 @@ git clone https://github.com/VorticityXYZ/GaiaAPI /working-directory
 2. demo2.py - Demostrates how to run a acoustic reverse time migration (RTM) .
 3. edemo.py - Demonstrates how to run a forward model using the elastic wave equations.
 4. edemo2.py - Demonstrates how to run a elastic reverse time migration (RTM).
+5. batch_demo.py - Demonstrates how to run acoustic forward model in batch mode.
 
 ### Full Documentation
-* [vorticity.cloud](https://www.vorticity.cloud) - WIP
+* [gaiaseismic.cloud](http://gaiaseismic.cloud.s3-website-us-west-2.amazonaws.com/) - WIP
 
 ## License
 
