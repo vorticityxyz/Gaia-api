@@ -440,7 +440,7 @@ def f28(model, shot, shotxyz, recxxyyz, deltas):
 
 def f28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
 
-    # temporal accuracy 2, spacial accuracy 8, no abc
+    # temporal accuracy 2, spacial accuracy 8, pml
     act = 2 
     acs = 8
     abc = 1
