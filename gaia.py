@@ -26,8 +26,8 @@ EL_SANITY_FILE = "_eparameters.npy"
 BF_SANILTY_FILE = "_bfparameters.npy"
 
 #SERVER_ADDRESS = 'localhost:8888'
-#SERVER_ADDRESS = '35.193.176.194:443'
-SERVER_ADDRESS = '73.222.114.117:8888'
+#SERVER_ADDRESS = '73.222.114.117:8888'
+SERVER_ADDRESS = '35.193.176.194:443'
 
 def get_file_chunks(filename):
     with open(filename, 'rb') as f:
@@ -879,14 +879,14 @@ def batchf28pml(block, shotbox, sweep, shot, shotxyz, recxxyyz, deltas, pml, des
                 sys.stdout.flush()
                 if (response.progress == 1.0):
                     break
-                time.sleep(0.05)
+                #time.sleep(0.02)
             
             print()
             while(True):
                 response = client.BatchForwardStatus(token, filename)
                 if (response.fileExists == True):
                     break
-                time.sleep(0.05)
+                #time.sleep(0.02)
 
             client.BatchForwardDownload(token, filename, drop_point)
             

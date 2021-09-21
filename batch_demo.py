@@ -14,24 +14,24 @@ def generate_ricker(nt, freq, dt):
 
 def generate_batch_data():
 
-    model_nx = 1001
-    model_ny = 501
-    model_nz = 501
+    model_nx = 1001 #1001 #1777
+    model_ny = 501 #501 #3270
+    model_nz = 501 #501 #1601
 
-    shotbox_nx = 501
-    shotbox_ny = 501
-    shotbox_nz = 501
+    shotbox_nx = 501 #501 #1000
+    shotbox_ny = 501 #501 #1000
+    shotbox_nz = 501 #501 #1601
 
-    dx = 5
+    dx = 2.5
     dy = dx
     dz = dx
 
-    F = 10
-    dt = 0.00043
-    nt = 7000
+    F = 30
+    dt = 0.0004
+    nt = 2500
 
-    pmlw = 100
-    pmla = 30
+    pmlw = 50
+    pmla = 100
     ghost = 4       # ghost points
 
     xs = round(shotbox_nx/2)
