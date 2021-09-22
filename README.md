@@ -41,7 +41,7 @@ git clone https://github.com/VorticityXYZ/GaiaAPI /working-directory
 5. batch_demo.py - Demonstrates how to run acoustic forward model in batch mode.
 
 ### Full Documentation
-* [gaiaseismic.cloud](http://gaiaseismic.cloud/) - WIP
+* [gaiaseismic.cloud](http://gaiaseismic.cloud.s3-website-us-west-2.amazonaws.com/) - WIP
 
 ## License
 
