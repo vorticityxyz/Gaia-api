@@ -134,7 +134,7 @@ if __name__ == '__main__':
     vp, vs, vpb, vsb, rho, shot, shotxyz, recxxyyz, deltas, abc = generate_elastic_data()
 
     # Generate synthetic data (proxy for real)
-    #vx, vy, vz = gaia.ef8abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc)
+    #vx, vy, vz = gaia.ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc)
     #plot_etraces(vx[:, :, 0], vy[:, :, 0], vz[:, :, 0])
     #np.savez("data/e_traces.npz", vx=vx, vy=vy, vz=vz)
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         vz = data['vz']
 
     # Run background forward model
-    vxb, vyb, vzb = gaia.ef8abc(vpb, vsb, rho, shot, shotxyz, recxxyyz, deltas, abc)
+    vxb, vyb, vzb = gaia.ef18abc(vpb, vsb, rho, shot, shotxyz, recxxyyz, deltas, abc)
 
     vx_res = vx - vxb
     vy_res = vy - vyb

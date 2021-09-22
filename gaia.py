@@ -612,7 +612,7 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
 
     return update
 
-def ef8abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
+def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
 
     # temporal accuracy 2, spacial accuracy 8, with sponge
     temportal_ac = 1

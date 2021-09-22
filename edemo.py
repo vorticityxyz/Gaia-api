@@ -103,7 +103,7 @@ if __name__ == '__main__':
     print("Generating elastic test data...")    
     vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc = generate_elastic_data()
 
-    vx, vy, vz = gaia.ef8abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc)
+    vx, vy, vz = gaia.ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc)
 
     plot_etraces(vx[:, :, 0], vy[:, :, 0], vz[:, :, 0])
 
