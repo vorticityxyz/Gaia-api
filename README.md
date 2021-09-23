@@ -34,11 +34,11 @@ git clone https://github.com/VorticityXYZ/GaiaAPI /working-directory
 
 ## Usage
 ### Examples
-1. demo.py - Demonstrates how to run a forward model using the acousitic wave equations.
-2. demo2.py - Demostrates how to run a acoustic reverse time migration (RTM) .
-3. edemo.py - Demonstrates how to run a forward model using the elastic wave equations.
-4. edemo2.py - Demonstrates how to run a elastic reverse time migration (RTM).
-5. batch_demo.py - Demonstrates how to run acoustic forward model in batch mode.
+1. [demo.py](https://github.com/vorticityxyz/Gaia-api/blob/main/demo.py) - Demonstrates how to run a forward model using the acousitic wave equations.
+2. [demo2.py](https://github.com/vorticityxyz/Gaia-api/blob/main/demo2.py) - Demostrates how to run a acoustic reverse time migration (RTM) .
+3. [edemo.py](https://github.com/vorticityxyz/Gaia-api/blob/main/edemo.py) - Demonstrates how to run a forward model using the elastic wave equations.
+4. [edemo2.py](https://github.com/vorticityxyz/Gaia-api/blob/main/edemo2.py) - Demonstrates how to run a elastic reverse time migration (RTM).
+5. [batch_demo.py](https://github.com/vorticityxyz/Gaia-api/blob/main/batch_demo.py) - Demonstrates how to run acoustic forward models in batch mode.
 
 ### Full Documentation
 * [gaiaseismic.cloud](http://gaiaseismic.cloud.s3-website-us-west-2.amazonaws.com/) - WIP
