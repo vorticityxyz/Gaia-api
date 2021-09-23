@@ -1,3 +1,11 @@
+# Description:
+#
+# This file is component of Vorticity Gaia API for seismic imaging
+# WARNING!!! DO NOT MODIFY
+#
+# (C) Vorticity Inc. Mountain View, CA 2021
+# Licence: MIT
+
 # Validation parameters
 MAX_DIM = 1024
 MIN_DIM = 10

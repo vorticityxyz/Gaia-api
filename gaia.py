@@ -1,3 +1,11 @@
+# Description:
+#
+# This file is component of Vorticity Gaia API for seismic imaging
+# WARNING!!! DO NOT MODIFY
+#
+# (C) Vorticity Inc. Mountain View, CA 2021
+# Licence: MIT
+
 import numpy as np
 import grpc
 import time
