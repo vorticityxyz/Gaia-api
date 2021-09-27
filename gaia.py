@@ -370,9 +370,11 @@ class GaiaClient:
         return response.status
 
 def reset_server():
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
     # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
+    client = GaiaClient(token)
 
     # get the token for identification to server
     token = tokens.USER_TOKEN
