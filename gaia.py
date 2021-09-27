@@ -13,6 +13,8 @@ import os
 import sys
 import gaia_pb2
 import gaia_pb2_grpc
+import dispatch_pb2
+import dispatch_pb2_grpc
 import validate
 
 import tokens
@@ -34,8 +36,7 @@ EL_SANITY_FILE = "_eparameters.npy"
 BF_SANILTY_FILE = "_bfparameters.npy"
 
 #SERVER_ADDRESS = 'localhost:8888'
-#SERVER_ADDRESS = '73.222.114.117:8888'
-SERVER_ADDRESS = '34.71.232.136:443'
+DISPATCH_SERVER = 'vorticity.cloud:443'
 
 def get_file_chunks(filename):
     with open(filename, 'rb') as f:
@@ -83,15 +84,39 @@ def show_progress(responses):
     print()
     return final_progress_value
 
-class GaiaClient:
+
+class DispatchClient:
     def __init__(self, address):
         with open('server.crt', 'rb') as f:
             creds = grpc.ssl_channel_credentials(f.read())
-        channel = grpc.secure_channel(address, creds,
+        channel = grpc.secure_channel(address, creds, 
                                       options = (('grpc.ssl_target_name_override', 'localhost'), 
                                                  ('grpc.default_authority', 'localhost')),
                                       compression=grpc.Compression.Gzip)
-        self.stub = gaia_pb2_grpc.GaiaServerStub(channel)
+        self.stub = dispatch_pb2_grpc.DispatchServerStub(channel)
+
+    def DispatchServerAddressRequest(self, token):
+        request = dispatch_pb2.AddressRequest()
+        request.token = token
+        response = self.stub.DispatchServerAddressRequest(request)
+
+        return response
+
+class GaiaClient:
+    def __init__(self, token):
+        dispatch_client = DispatchClient(DISPATCH_SERVER)
+        response = dispatch_client.DispatchServerAddressRequest(token)
+        if (response.status == codes.SUCCESS):
+            address = response.address
+            with open('server.crt', 'rb') as f:
+                creds = grpc.ssl_channel_credentials(f.read())
+            channel = grpc.secure_channel(address, creds,
+                                          options = (('grpc.ssl_target_name_override', 'localhost'), 
+                                                     ('grpc.default_authority', 'localhost')),
+                                          compression=grpc.Compression.Gzip)
+            self.stub = gaia_pb2_grpc.GaiaServerStub(channel)
+        else:
+            raise Exception("We could not verify this account. Please contact Vorticity.")
 
     def StatusCheck(self, token):
         request = gaia_pb2.StatusRequest()
@@ -357,6 +382,7 @@ def reset_server():
     else:
         print("Error resetting server. Contact Vorticity.")
 
+# Forward model operator
 def f28(model, shot, shotxyz, recxxyyz, deltas):
 
     # temporal accuracy 2, spacial accuracy 8, no abc
@@ -392,12 +418,11 @@ def f28(model, shot, shotxyz, recxxyyz, deltas):
     np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.SanityCheck(SANITY_FILE)
@@ -446,6 +471,7 @@ def f28(model, shot, shotxyz, recxxyyz, deltas):
 
     return shot_record
 
+# Forward model operator with pml
 def f28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
 
     # temporal accuracy 2, spacial accuracy 8, pml
@@ -479,12 +505,11 @@ def f28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
     np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.SanityCheck(SANITY_FILE)
@@ -533,6 +558,94 @@ def f28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
 
     return shot_record
 
+# Multi accelerator card forward model operator
+def mf28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
+
+    # temporal accuracy 2, spacial accuracy 8, pml
+    act = 2 
+    acs = 8
+    abc = 1
+    cnum = 2       # num accelerator cards
+
+    # Validate that user input is usable
+    validate.multicard_model(model, cnum)
+    validate.shot(shot)
+    validate.shotxyz(model, shotxyz)
+    validate.recxxyyz(model, recxxyyz)
+    validate.deltas(deltas)
+    validate.pml(model, pml)
+
+    sanity_data = np.array([model.shape[0], model.shape[1], model.shape[2], shot.shape[0],
+                            recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3],
+                            act, abc, cnum], dtype=np.int32)
+
+    config_int = np.array([shotxyz[0], shotxyz[1], shotxyz[2],
+                           recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3], recxxyyz[4],
+                           act, acs, abc,
+                           pml[0], pml[1],    # no pml
+                           cnum], dtype=np.int32)
+    config_float = deltas
+
+    print("Starting gaia process.")
+
+    # Save data to disk for transfer
+    np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
+    np.save(SANITY_FILE, sanity_data)
+
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
+
+    # Do a quick sanity check to ensure simulation parameters are within server bounds
+    status = client.SanityCheck(SANITY_FILE)
+    if (status == codes.ERROR):
+        raise Exception("This simulation will take too many resources. Try again with a lower resolution, receiver size and/or timesteps.")
+
+    # Check if server is ready for upload and if so upload file
+    status = client.StatusCheck(token)
+    if (status == codes.UPLOAD_READY):
+        file_length = client.Upload(IN_FILE)
+        if (file_length != os.path.getsize(IN_FILE)):
+            raise Exception("Something went wrong with data upload to server. Try again in a bit or if problem persists, contact Vorticity.")
+    else:
+        raise Exception("Server busy. Wait for the original task to complete.")
+
+    # Now instigate execution
+    status = client.StatusCheck(token)
+    if (status == codes.EXEC_READY):
+        final_progress_value = client.Execute(token)
+        if (final_progress_value != 1.0):
+            raise Exception("Something went wrong. Try again in a bit and if problem persists, contact Vorticity.")
+    else:
+        raise Exception("Server not ready. Try again in a few minites.")
+
+    # Download shot_record
+    status = client.StatusCheck(token)
+    if (status == codes.DOWNLOAD_READY):
+        client.Download(token, OUT_FILE)
+    else:
+        raise Exception("Server not ready. Try again in a few minites. If the problem persists, contact Vorticity.") 
+
+    # Clean up remote server
+    status = client.StatusCheck(token)
+    if (status == codes.CLEANUP_READY):
+        status = client.CleanUp(token)
+        if (status == codes.SUCCESS):
+            print("Process complete!")
+        else:
+            print("Process did not complete as intended. Contact Vorticity.")
+
+    # return data to user
+    shot_record = np.load(OUT_FILE)
+    os.remove(IN_FILE)
+    os.remove(OUT_FILE)
+    os.remove(SANITY_FILE)
+
+    return shot_record
+
+# Acoustic RTM operator
 def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
     
     # temporal accuracy 2, spacial accuracy 8, with pml
@@ -566,12 +679,11 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
     np.savez(RTM_FILE, model=model, shot=shot, traces=traces, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.rtmSanityCheck(SANITY_FILE)
@@ -620,6 +732,7 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
 
     return update
 
+# Elastic forward model operator
 def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
 
     # temporal accuracy 2, spacial accuracy 8, with sponge
@@ -652,12 +765,11 @@ def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
     np.savez(EL_IN_FILE, vp=vp, vs=vs, rho=rho, shot=shot, config_int=config_int, config_float=config_float)
     np.save(EL_SANITY_FILE, sanity_data)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.eForwardSanityCheck(EL_SANITY_FILE)
@@ -709,6 +821,7 @@ def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
 
     return vx_traces, vy_traces, vz_traces
 
+# Elastic RTM operator
 def ertm18abc(vp, vs, rho, shot, vx, vy, vz, shotxyz, recxxyyz, deltas, abc):
     # temporal accuracy 2, spacial accuracy 8, with sponge
     temportal_ac = 1
@@ -741,12 +854,11 @@ def ertm18abc(vp, vs, rho, shot, vx, vy, vz, shotxyz, recxxyyz, deltas, abc):
     np.savez(EL_RTM_FILE, vp=vp, vs=vs, rho=rho, shot=shot, vx=vx, vy=vy, vz=vz, config_int=config_int, config_float=config_float)
     np.save(EL_SANITY_FILE, sanity_data)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.eRTMSanityCheck(EL_SANITY_FILE)
@@ -799,6 +911,7 @@ def ertm18abc(vp, vs, rho, shot, vx, vy, vz, shotxyz, recxxyyz, deltas, abc):
 
     return dvp, dvs
 
+# Batch forward model operator
 def batchf28pml(block, shotbox, sweep, shot, shotxyz, recxxyyz, deltas, pml, destination):
     # simulation parameters
     act = 2
@@ -846,12 +959,11 @@ def batchf28pml(block, shotbox, sweep, shot, shotxyz, recxxyyz, deltas, pml, des
     np.save(BF_SANILTY_FILE, sanity_data)
     np.savez(BF_FILE, model=block, shotbox=shotbox, sweep=sweep, shot=shot, shotxyz=shotxyz, recxxyyz=recxxyyz, deltas=deltas, sim=sim, pml=pml)
 
-    # Launch client
-    launch_address = SERVER_ADDRESS
-    client = GaiaClient(launch_address)
-
     # get the token for identification to server
     token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
 
     # Do a quick sanity check to ensure simulation parameters are within server bounds
     status = client.BatchForwardSanityCheck(BF_SANILTY_FILE)
