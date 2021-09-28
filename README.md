@@ -1,9 +1,9 @@
 # Vorticity Gaia API
 
-Vorticity Gaia is a cloud compute service that uses custom accelerator cards to speed up compute seismic imaging projects. This API connects users to this service through well understood seismic operators.
+Vorticity Gaia is a cloud compute service that provides lightening fast computing for seismic imaging problems such as FWI, using custom silicon accelerators. These accelerators are built ground up to solve scientific computing problems and are typically orders or magnitude faster than typical consumer GPU and CPU based systems. This open source API allows users to connect to this service using well established seismic operators.
 
 ## Getting Started
-This guide is for linux and MacOS based machines. For other operating systems, contact Vorticity.
+This guide is for linux and MacOS based machines. Windows machines will require a linux bash shell. For troubleshooting contact Vorticity.
 
 ## Prerequisits
 * [Python3.8](https://www.python.org/downloads/) or better
@@ -27,9 +27,9 @@ python3 -m pip install -U matplotlib
 ## Installation
 1. Clone the public git repository to your working directory
 ```bash
-git clone https://github.com/VorticityXYZ/GaiaAPI /working-directory
+git clone https://github.com/VorticityXYZ/GaiaAPI
 ```
-2. Get in touch with Vorticity (<hello@vorticity.xyz>) for a token and certificate file. 
+2. Get in touch with Vorticity (<hello@vorticity.xyz>) for a token and encryption file.
 3. Copy these two files to your working directory.
 
 ## Usage

@@ -1,7 +1,7 @@
 # Description:
 #
-# This file is component of Vorticity Gaia API for seismic imaging
-# WARNING!!! DO NOT MODIFY
+# WARNING!!! This file is a critical component of Vorticity Gaia API for seismic imaging
+# PLEASE DO NOT MODIFY
 #
 # (C) Vorticity Inc. Mountain View, CA 2021
 # Licence: MIT
@@ -32,6 +32,26 @@ def model(model):
 
     if ((nx > MAX_DIM) or (ny > MAX_DIM) or (nz > MAX_DIM)):
         raise Exception("Earth model cannot be larger than 1024 grid points in any dimension.")
+
+    if ((nx < MIN_DIM) or (ny < MIN_DIM) or (nz < MIN_DIM)):
+        raise Exception("Earth model cannot be smaller than 10 grid points in any dimension.")
+
+# Validate earth model for multi card processing
+def multicard_model(model, cnum):
+    # check if float32
+    if (model.dtype != "float32"):
+        raise Exception("Earth model must be of type float32.")
+
+    # check if 3 dimensions
+    if (model.ndim != 3):
+        raise Exception("Earth model must be a three dimensional numpy array.")
+
+    nx = model.shape[0]
+    ny = model.shape[1]
+    nz = model.shape[2]
+
+    if ((nx > (cnum * MAX_DIM)) or (ny > (cnum * MAX_DIM)) or (nz > (cnum * MAX_DIM))):
+        raise Exception("Earth model dimensions exceeds maximum allowed. Check your setup.")
 
     if ((nx < MIN_DIM) or (ny < MIN_DIM) or (nz < MIN_DIM)):
         raise Exception("Earth model cannot be smaller than 10 grid points in any dimension.")

@@ -1,7 +1,7 @@
 # Description:
 #
-# This file is component of Vorticity Gaia API for seismic imaging
-# WARNING!!! DO NOT MODIFY
+# WARNING!!! This file is a critical component of Vorticity Gaia API for seismic imaging
+# PLEASE DO NOT MODIFY
 #
 # (C) Vorticity Inc. Mountain View, CA 2021
 # Licence: MIT
