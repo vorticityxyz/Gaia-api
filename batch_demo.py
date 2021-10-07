@@ -46,14 +46,14 @@ def generate_ricker(nt, freq, dt):
 
 def generate_batch_data():
     # Full earth model dimensions
-    model_nx = 1001 #1001 #1777
-    model_ny = 501 #501 #3270
-    model_nz = 501 #501 #1601
+    model_nx = 1001 
+    model_ny = 501 
+    model_nz = 501 
 
     # Dimensions of the shotbox for each shot record
-    shotbox_nx = 501 #501 #1000
-    shotbox_ny = 501 #501 #1000
-    shotbox_nz = 501 #501 #1601
+    shotbox_nx = 501 
+    shotbox_ny = 501 
+    shotbox_nz = 501 
 
     ghost = 4       # ghost points in a 8 spacial stencil
 
@@ -68,7 +68,7 @@ def generate_batch_data():
     # number of timesteps
     nt = 2500
 
-    # Shot parameters
+    # Shot parameters (relative to shotbox)
     F = 30
     xs = round(shotbox_nx/2)
     ys = round(shotbox_ny/2)
@@ -78,20 +78,21 @@ def generate_batch_data():
     pmlw = 50
     pmla = 100
 
-    # Receiver parameters
+    # Receiver parameters (relative to shotbox)
     xt1 = pmlw + ghost
     xt2 = (shotbox_nx - pmlw - ghost - 1)
     yt1 = round(shotbox_ny/2)
     yt2 = round(shotbox_ny/2)
     zt = ghost
 
-    # x and y dimension sweep parameters
-    x_start = 0
-    x_end = 2
-    x_step = 1
-    y_start = 0
-    y_end = 0
-    y_step = 0
+    # x sweep parameters (relative to global model)
+    x_start = 0         # starting x position of shot box
+    x_end = 2           # ending x position of shot box
+    x_step = 1          # step length in x direction
+
+    y_start = 0         # starting y position of shot box
+    y_end = 0           # ending y position of shot box
+    y_step = 0          # step length in y direction
 
     # Earth model setup
     c1 = 1500**2
