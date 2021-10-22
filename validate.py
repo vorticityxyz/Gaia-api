@@ -76,6 +76,26 @@ def block(block):
     if ((nx < MIN_BLOCK) or (ny < MIN_BLOCK) or (nz < MIN_BLOCK)):
         raise Exception("Earth block cannot be smaller than 10 grid points in any dimension.")
 
+# Validate earth model for rUpload
+def remote_model(shape, dtype):
+    # check if float32
+    if (dtype != "float32"):
+        raise Exception("Earth model must be of type float32.")
+
+    # check if 3 dimensions
+    if (len(shape) != 3):
+        raise Exception("Earth model must be a three dimensional numpy array.")
+
+    nx = shape[0]
+    ny = shape[1]
+    nz = shape[2]
+
+    if ((nx > MAX_BLOCK) or (ny > MAX_BLOCK) or (nz > MAX_BLOCK)):
+        raise Exception("Earth model cannot be larger than 10000 grid points in any dimension.")
+
+    if ((nx < MIN_BLOCK) or (ny < MIN_BLOCK) or (nz < MIN_BLOCK)):
+        raise Exception("Earth model cannot be smaller than 10 grid points in any dimension.")
+
 # Validate that the shotbox for batch processing
 def shotbox(block, shotbox):
     

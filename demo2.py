@@ -106,11 +106,11 @@ def generate_test_data():
     c2 = 2500
 
     # Build earth model
-    model = np.full((nx, ny, nz), c1**2, dtype=np.float32)      # smooth model
-    model[:, :, 151:] = c2**2                                   # insert step
+    model = np.full((nx, ny, nz), c1, dtype=np.float32)      # smooth model
+    model[:, :, 151:] = c2                                   # insert step
 
     # Build smooth background model
-    background = np.full((nx, ny, nz), c1**2, dtype=np.float32)
+    background = np.full((nx, ny, nz), c1, dtype=np.float32)
 
     shot = generate_ricker(nt, freq, dt)
     shotxyz = np.array([xs, ys, zs], dtype=np.int32)

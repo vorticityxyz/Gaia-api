@@ -34,6 +34,7 @@ EL_UPDATE_FILE = "_ertm_update.npz"
 SANITY_FILE = "_parameters.npy"
 EL_SANITY_FILE = "_eparameters.npy"
 BF_SANILTY_FILE = "_bfparameters.npy"
+RBF_SETUP_FILE = '_rbf_setup.npz'
 
 #SERVER_ADDRESS = 'localhost:8888'
 DISPATCH_SERVER = 'vorticity.cloud:443'
@@ -107,7 +108,8 @@ class GaiaClient:
         dispatch_client = DispatchClient(DISPATCH_SERVER)
         response = dispatch_client.DispatchServerAddressRequest(token)
         if (response.status == codes.SUCCESS):
-            address = response.address
+            #address = response.address
+            address = 'localhost:8888'
             with open('server.crt', 'rb') as f:
                 creds = grpc.ssl_channel_credentials(f.read())
             channel = grpc.secure_channel(address, creds,
@@ -357,10 +359,74 @@ class GaiaClient:
         response = self.stub.BatchForwardCleanUp(request)
         return response.status
 
-    def Reset(self, sent_token):
-        request = gaia_pb2.ResetRequest()
+    def rUploadSanityCheck(self, sent_token, filename, filesize):
+        request = gaia_pb2.RemoteUploadSanityRequest()
         request.token = sent_token
-        response = self.stub.Reset(request)
+        request.filename = filename
+        request.filesize = filesize
+        response = self.stub.rUploadSanityCheck(request)
+        return response.status
+
+    def rUpload(self, file_name):
+        start = time.time()
+        chunks_generator = get_file_chunks(file_name)
+        response = self.stub.rUpload(chunks_generator)
+        end = time.time()
+        upload_time = end - start
+        print("Upload time:", "{:.2f}".format(upload_time), 's', 
+                    "speed:", "{:.2f}".format(os.path.getsize(file_name)/upload_time/1024/1024), 'MB/s')
+        return response.length
+
+    def rForwardUpload(self, file_name):
+        chunks_generator = get_file_chunks_nv(file_name)
+        response = self.stub.rForwardUpload(chunks_generator)
+        return response
+
+    def rForwardInitExec(self, sent_token):
+        request = gaia_pb2.ExecuteRequest()
+        request.token = sent_token
+        response = self.stub.rForwardInitExec(request)
+        return response.status
+
+    def rForwardStatus(self, token, filename):
+        request = gaia_pb2.BatchStatusRequest()
+        request.token = token
+        request.filename = filename
+        response = self.stub.rForwardStatus(request)
+        return response
+
+    def rForwardDownload(self, sent_token, sent_filename, out_filename):
+        start = time.time()
+        request = gaia_pb2.BatchDownloadRequest()
+        request.token = sent_token
+        request.filename = sent_filename
+        responses = self.stub.rForwardDownload(request)
+        size = 0
+        with open(out_filename, 'wb') as f:
+            for response in responses:
+                f.write(response.buffer)
+                size += sys.getsizeof(response.buffer)
+                sys.stdout.write('\r')
+                sys.stdout.write(out_filename + ' - %.1f MB' % (size/CHUNK_SIZE,))
+                sys.stdout.flush()
+
+        #print()
+        end = time.time()
+        download_time = end - start
+        print(" Download time:", "{:.2f}".format(download_time), 's',
+                      "speed:", "{:.2f}".format(os.path.getsize(out_filename)/download_time/1024/1024), 'MB/s' )
+
+    def rForwardCleanUp(self, sent_token):
+        request = gaia_pb2.CleanUpRequest()
+        request.token = sent_token
+        response = self.stub.rForwardCleanUp(request)
+        return response.status
+
+    def rDelete(self, sent_token, filename):
+        request = gaia_pb2.DeleteRequest()
+        request.token = sent_token
+        request.filename = filename
+        response = self.stub.rDelete(request)
         return response.status
 
     def Reset(self, sent_token):
@@ -417,7 +483,7 @@ def f28(model, shot, shotxyz, recxxyyz, deltas):
     print("Starting gaia process.")
 
     # Save data to disk for transfer
-    np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
+    np.savez(IN_FILE, model=np.square(model), shot=shot, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -504,7 +570,7 @@ def f28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
     print("Starting gaia process.")
 
     # Save data to disk for transfer
-    np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
+    np.savez(IN_FILE, model=np.square(model), shot=shot, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -591,7 +657,7 @@ def mf28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
     print("Starting gaia process.")
 
     # Save data to disk for transfer
-    np.savez(IN_FILE, model=model, shot=shot, config_int=config_int, config_float=config_float)
+    np.savez(IN_FILE, model=np.square(model), shot=shot, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -678,7 +744,7 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
     print("Starting gaia process.")
 
     # Save data to disk for transfer
-    np.savez(RTM_FILE, model=model, shot=shot, traces=traces, config_int=config_int, config_float=config_float)
+    np.savez(RTM_FILE, model=np.square(model), shot=shot, traces=traces, config_int=config_int, config_float=config_float)
     np.save(SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -764,7 +830,7 @@ def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
     print("Starting gaia process.")
 
     # Save data to disk for transfer
-    np.savez(EL_IN_FILE, vp=vp, vs=vs, rho=rho, shot=shot, config_int=config_int, config_float=config_float)
+    np.savez(EL_IN_FILE, vp=np.square(vp), vs=np.square(vs), rho=rho, shot=shot, config_int=config_int, config_float=config_float)
     np.save(EL_SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -853,7 +919,7 @@ def ertm18abc(vp, vs, rho, shot, vx, vy, vz, shotxyz, recxxyyz, deltas, abc):
     config_float = deltas
 
     print("Starting gaia process.")
-    np.savez(EL_RTM_FILE, vp=vp, vs=vs, rho=rho, shot=shot, vx=vx, vy=vy, vz=vz, config_int=config_int, config_float=config_float)
+    np.savez(EL_RTM_FILE, vp=np.square(vp), vs=np.square(vs), rho=rho, shot=shot, vx=vx, vy=vy, vz=vz, config_int=config_int, config_float=config_float)
     np.save(EL_SANITY_FILE, sanity_data)
 
     # get the token for identification to server
@@ -1030,3 +1096,169 @@ def batchf28pml(block, shotbox, sweep, shot, shotxyz, recxxyyz, deltas, pml, des
     # remove all temp files
     os.remove(BF_FILE)
     os.remove(BF_SANILTY_FILE)
+
+# remote upload operator
+def remoteUpload(local_filename, remote_filename):
+
+    with open(local_filename, 'rb') as fobj:
+        version = np.lib.format.read_magic(fobj)
+        if version[0] == 1:
+            shape, fortran_order, dtype = np.lib.format.read_array_header_1_0(fobj)
+        else:
+            shape, fortran_order, dtype = np.lib.format.read_array_header_2_0(fobj)
+
+    # Validate that user input is usable
+    validate.remote_model(shape, dtype)
+
+    print("Starting gaia process.")
+
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
+
+    file_size = os.path.getsize(local_filename)
+    sanity_status = client.rUploadSanityCheck(token, remote_filename, file_size)
+
+    if (sanity_status == codes.ERROR):
+        raise Exception("Unable to upload. Not enough free space on remote server.")
+
+    response = client.rUpload(local_filename)
+
+    if (response != file_size):
+        raise Exception("Something went wrong with data upload to server. Try a gaia reset or if problem persists, contact Vorticity.")
+
+    print("Process complete!")
+
+# remote batch forward operator
+def rbf28pml(modelfile, shotbox, sweep, shot, shotxyz, recxxyyz, deltas, pml, destination):
+    # simulation parameters
+    act = 2
+    acs = 8       # spacial accuracy
+    # absorbing boundary conditions
+    # 0 - none, 1 - pml
+    abc = 1
+    cnum = 2     # number of accelerator cards to use
+
+    validate.shot(shot)
+    snx = shotbox[0]
+    sny = shotbox[1]
+    snz = shotbox[2]
+
+    ghost_model = np.empty((snx, sny, snz))
+
+    validate.shotxyz(ghost_model, shotxyz)
+    validate.recxxyyz(ghost_model, recxxyyz)
+    validate.deltas(deltas)
+    validate.pml(ghost_model, pml)
+
+    xs = shotxyz[0]
+    ys = shotxyz[1]
+    zs = shotxyz[2]
+
+    nt = shot.shape[0]
+    xt1 = recxxyyz[0]
+    xt2 = recxxyyz[1]
+    yt1 = recxxyyz[2]
+    yt2 = recxxyyz[3]
+    zt = recxxyyz[4]
+
+    xsrt = sweep[0]
+    xend = sweep[1]
+    xstp = sweep[2]
+    ysrt = sweep[3]
+    yend = sweep[4]
+    ystp = sweep[5]
+
+    sim = np.array([act, acs, abc, cnum], dtype=np.int32)
+
+    print("Starting gaia process.")
+    np.savez(RBF_SETUP_FILE, 
+        modelfile=modelfile, shotbox=shotbox, sweep=sweep, shot=shot, shotxyz=shotxyz, recxxyyz=recxxyyz, deltas=deltas, sim=sim, pml=pml)
+
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
+
+    # Check if server is ready for upload and if so upload file
+    status = client.StatusCheck(token)
+    if (status == codes.UPLOAD_READY):
+        response = client.rForwardUpload(RBF_SETUP_FILE)
+        if (response.status != codes.SUCCESS):
+            raise Exception("Simulation was rejected by the server. Possible incorrect setup.")
+
+        if (response.length != os.path.getsize(RBF_SETUP_FILE)): 
+            raise Exception("Error uploading simulation. Reset server and try again. If problem persists, contact Vorticity.")
+    else:
+        raise Exception("Server busy. Wait for the original task to complete.")
+
+    # Now instigate execution
+    status = client.rForwardInitExec(token)
+    if (status == codes.ERROR):
+        raise Exception("Something went wrong when instigating execution. Try again after resetting the server or if problem persists, contact Vorticity.")
+
+    y_offset = ysrt
+    x_offset = xsrt
+
+    while (y_offset <= yend):
+        while (x_offset <= xend):
+            filename = "shot-" + str(x_offset + xs) + "-" + str(y_offset + ys) + ".npy"
+            drop_point = destination + filename
+
+            while(True):
+                response = client.rForwardStatus(token, filename)
+                if (response.fileExists == True):
+                    break
+                sys.stdout.write('\r')
+                sys.stdout.write('Processing shot %d of %d | %.2f%%' % (response.shot, response.total, response.progress * 100,))
+                sys.stdout.flush()
+                if (response.progress == 1.0):
+                    print()
+                    break
+
+            while(True):
+                response = client.rForwardStatus(token, filename)
+                if (response.fileExists == True):
+                    break
+                #time.sleep(0.02)
+
+            client.rForwardDownload(token, filename, drop_point)
+
+            if (xstp == 0):
+                break
+            x_offset += xstp
+        
+        if (ystp == 0):
+            break
+        x_offset = xsrt
+        y_offset += ystp
+
+    status = client.rForwardCleanUp(token)
+    if (status == codes.SUCCESS):
+        print("Process complete!")
+    else:
+        print("Process did not complete as intended. Contact Vorticity.")
+
+    # remove all temp files
+    os.remove(RBF_SETUP_FILE)
+
+# remote delte operator
+def remoteDelete(remote_filename):
+    print("Starting gaia process.")
+
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
+
+    print("Deleting remote earth model.")
+    status = client.rDelete(token, remote_filename)
+
+    if (status == codes.SUCCESS):
+        print("Process complete!")
+    else:
+        print("Process did not complete as intended. Contact Vorticity.")

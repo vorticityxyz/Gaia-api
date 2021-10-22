@@ -154,6 +154,46 @@ class GaiaServerStub(object):
                 request_serializer=gaia__pb2.CleanUpRequest.SerializeToString,
                 response_deserializer=gaia__pb2.StatusReply.FromString,
                 )
+        self.rUploadSanityCheck = channel.unary_unary(
+                '/GaiaServer/rUploadSanityCheck',
+                request_serializer=gaia__pb2.RemoteUploadSanityRequest.SerializeToString,
+                response_deserializer=gaia__pb2.SanityReply.FromString,
+                )
+        self.rUpload = channel.stream_unary(
+                '/GaiaServer/rUpload',
+                request_serializer=gaia__pb2.Chunk.SerializeToString,
+                response_deserializer=gaia__pb2.UploadReply.FromString,
+                )
+        self.rForwardUpload = channel.stream_unary(
+                '/GaiaServer/rForwardUpload',
+                request_serializer=gaia__pb2.Chunk.SerializeToString,
+                response_deserializer=gaia__pb2.RemoteUploadReply.FromString,
+                )
+        self.rForwardInitExec = channel.unary_unary(
+                '/GaiaServer/rForwardInitExec',
+                request_serializer=gaia__pb2.ExecuteRequest.SerializeToString,
+                response_deserializer=gaia__pb2.StatusReply.FromString,
+                )
+        self.rForwardStatus = channel.unary_unary(
+                '/GaiaServer/rForwardStatus',
+                request_serializer=gaia__pb2.BatchStatusRequest.SerializeToString,
+                response_deserializer=gaia__pb2.BatchStatusReply.FromString,
+                )
+        self.rForwardDownload = channel.unary_stream(
+                '/GaiaServer/rForwardDownload',
+                request_serializer=gaia__pb2.BatchDownloadRequest.SerializeToString,
+                response_deserializer=gaia__pb2.BatchChunk.FromString,
+                )
+        self.rForwardCleanUp = channel.unary_unary(
+                '/GaiaServer/rForwardCleanUp',
+                request_serializer=gaia__pb2.CleanUpRequest.SerializeToString,
+                response_deserializer=gaia__pb2.StatusReply.FromString,
+                )
+        self.rDelete = channel.unary_unary(
+                '/GaiaServer/rDelete',
+                request_serializer=gaia__pb2.DeleteRequest.SerializeToString,
+                response_deserializer=gaia__pb2.StatusReply.FromString,
+                )
 
 
 class GaiaServerServicer(object):
@@ -333,6 +373,55 @@ class GaiaServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def rUploadSanityCheck(self, request, context):
+        """Remote operators
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rUpload(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rForwardUpload(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rForwardInitExec(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rForwardStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rForwardDownload(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rForwardCleanUp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def rDelete(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GaiaServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -474,6 +563,46 @@ def add_GaiaServerServicer_to_server(servicer, server):
             'BatchForwardCleanUp': grpc.unary_unary_rpc_method_handler(
                     servicer.BatchForwardCleanUp,
                     request_deserializer=gaia__pb2.CleanUpRequest.FromString,
+                    response_serializer=gaia__pb2.StatusReply.SerializeToString,
+            ),
+            'rUploadSanityCheck': grpc.unary_unary_rpc_method_handler(
+                    servicer.rUploadSanityCheck,
+                    request_deserializer=gaia__pb2.RemoteUploadSanityRequest.FromString,
+                    response_serializer=gaia__pb2.SanityReply.SerializeToString,
+            ),
+            'rUpload': grpc.stream_unary_rpc_method_handler(
+                    servicer.rUpload,
+                    request_deserializer=gaia__pb2.Chunk.FromString,
+                    response_serializer=gaia__pb2.UploadReply.SerializeToString,
+            ),
+            'rForwardUpload': grpc.stream_unary_rpc_method_handler(
+                    servicer.rForwardUpload,
+                    request_deserializer=gaia__pb2.Chunk.FromString,
+                    response_serializer=gaia__pb2.RemoteUploadReply.SerializeToString,
+            ),
+            'rForwardInitExec': grpc.unary_unary_rpc_method_handler(
+                    servicer.rForwardInitExec,
+                    request_deserializer=gaia__pb2.ExecuteRequest.FromString,
+                    response_serializer=gaia__pb2.StatusReply.SerializeToString,
+            ),
+            'rForwardStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.rForwardStatus,
+                    request_deserializer=gaia__pb2.BatchStatusRequest.FromString,
+                    response_serializer=gaia__pb2.BatchStatusReply.SerializeToString,
+            ),
+            'rForwardDownload': grpc.unary_stream_rpc_method_handler(
+                    servicer.rForwardDownload,
+                    request_deserializer=gaia__pb2.BatchDownloadRequest.FromString,
+                    response_serializer=gaia__pb2.BatchChunk.SerializeToString,
+            ),
+            'rForwardCleanUp': grpc.unary_unary_rpc_method_handler(
+                    servicer.rForwardCleanUp,
+                    request_deserializer=gaia__pb2.CleanUpRequest.FromString,
+                    response_serializer=gaia__pb2.StatusReply.SerializeToString,
+            ),
+            'rDelete': grpc.unary_unary_rpc_method_handler(
+                    servicer.rDelete,
+                    request_deserializer=gaia__pb2.DeleteRequest.FromString,
                     response_serializer=gaia__pb2.StatusReply.SerializeToString,
             ),
     }
@@ -958,6 +1087,142 @@ class GaiaServer(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/GaiaServer/BatchForwardCleanUp',
             gaia__pb2.CleanUpRequest.SerializeToString,
+            gaia__pb2.StatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rUploadSanityCheck(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/GaiaServer/rUploadSanityCheck',
+            gaia__pb2.RemoteUploadSanityRequest.SerializeToString,
+            gaia__pb2.SanityReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rUpload(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(request_iterator, target, '/GaiaServer/rUpload',
+            gaia__pb2.Chunk.SerializeToString,
+            gaia__pb2.UploadReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rForwardUpload(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(request_iterator, target, '/GaiaServer/rForwardUpload',
+            gaia__pb2.Chunk.SerializeToString,
+            gaia__pb2.RemoteUploadReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rForwardInitExec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/GaiaServer/rForwardInitExec',
+            gaia__pb2.ExecuteRequest.SerializeToString,
+            gaia__pb2.StatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rForwardStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/GaiaServer/rForwardStatus',
+            gaia__pb2.BatchStatusRequest.SerializeToString,
+            gaia__pb2.BatchStatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rForwardDownload(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/GaiaServer/rForwardDownload',
+            gaia__pb2.BatchDownloadRequest.SerializeToString,
+            gaia__pb2.BatchChunk.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rForwardCleanUp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/GaiaServer/rForwardCleanUp',
+            gaia__pb2.CleanUpRequest.SerializeToString,
+            gaia__pb2.StatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def rDelete(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/GaiaServer/rDelete',
+            gaia__pb2.DeleteRequest.SerializeToString,
             gaia__pb2.StatusReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

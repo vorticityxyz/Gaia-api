@@ -114,15 +114,15 @@ def generate_elastic_data():
     c2 = 2000
 
     # Build earth and background models
-    vp = np.full((nx, ny, nz), c1**2, dtype=np.float32)
-    vs = np.full((nx, ny, nz), (c1/2)**2, dtype=np.float32)
-    vpb = np.full((nx, ny, nz), c1**2, dtype=np.float32)
-    vsb = np.full((nx, ny, nz), (c1/2)**2, dtype=np.float32)
+    vp = np.full((nx, ny, nz), c1, dtype=np.float32)
+    vs = np.full((nx, ny, nz), (c1/2), dtype=np.float32)
+    vpb = np.full((nx, ny, nz), c1, dtype=np.float32)
+    vsb = np.full((nx, ny, nz), (c1/2), dtype=np.float32)
     rho = np.full((nx, ny, nz), 1.0, dtype=np.float32)
 
     # Insert step to the earth models
-    vp[:, :, 151:] = c2**2
-    vs[:, :, 151:] = (c2/2)**2
+    vp[:, :, 151:] = c2
+    vs[:, :, 151:] = (c2/2)
 
     shot = generate_ricker(nt, freq, dt)
     shotxyz = np.array([xs, ys, zs], dtype=np.int32)

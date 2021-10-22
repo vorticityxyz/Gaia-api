@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ngaia.proto\"\x17\n\x05\x43hunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\"K\n\nBatchChunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\x0c\n\x04shot\x18\x02 \x01(\x05\x12\r\n\x05total\x18\x03 \x01(\x05\x12\x10\n\x08progress\x18\x04 \x01(\x02\" \n\x0f\x44ownloadRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bUploadReply\x12\x0e\n\x06length\x18\x01 \x01(\x03\"\x1e\n\rStatusRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1f\n\x0e\x45xecuteRequest\x12\r\n\x05token\x18\x01 \x01(\t\"!\n\rProgressReply\x12\x10\n\x08progress\x18\x01 \x01(\x02\"\x1f\n\x0e\x43leanUpRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bSanityReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1d\n\x0cResetRequest\x12\r\n\x05token\x18\x01 \x01(\t\"5\n\x12\x42\x61tchStatusRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\"e\n\x10\x42\x61tchStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0c\n\x04shot\x18\x02 \x01(\x05\x12\r\n\x05total\x18\x03 \x01(\x05\x12\x10\n\x08progress\x18\x04 \x01(\x02\x12\x12\n\nfileExists\x18\x05 \x01(\x08\"7\n\x14\x42\x61tchDownloadRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t2\xd0\n\n\nGaiaServer\x12-\n\x0bStatusCheck\x12\x0e.StatusRequest\x1a\x0c.StatusReply\"\x00\x12&\n\x05Reset\x12\r.ResetRequest\x1a\x0c.StatusReply\"\x00\x12\'\n\x0bSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12\"\n\x06Upload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12.\n\x07\x45xecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12(\n\x08\x44ownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12*\n\x07\x43leanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12*\n\x0ertmSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12%\n\trtmUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x31\n\nrtmExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12+\n\x0brtmDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12-\n\nrtmCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12/\n\x13\x65\x46orwardSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12*\n\x0e\x65\x46orwardUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x36\n\x0f\x65\x46orwardExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12\x30\n\x10\x65\x46orwardDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12\x32\n\x0f\x65\x46orwardCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12+\n\x0f\x65RTMSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12&\n\neRTMUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x32\n\x0b\x65RTMExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12,\n\x0c\x65RTMDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12.\n\x0b\x65RTMCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12\x33\n\x17\x42\x61tchForwardSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12.\n\x12\x42\x61tchForwardUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x37\n\x14\x42\x61tchForwardInitExec\x12\x0f.ExecuteRequest\x1a\x0c.StatusReply\"\x00\x12>\n\x12\x42\x61tchForwardStatus\x12\x13.BatchStatusRequest\x1a\x11.BatchStatusReply\"\x00\x12>\n\x14\x42\x61tchForwardDownload\x12\x15.BatchDownloadRequest\x1a\x0b.BatchChunk\"\x00\x30\x01\x12\x36\n\x13\x42\x61tchForwardCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\ngaia.proto\"\x17\n\x05\x43hunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\"K\n\nBatchChunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\x0c\n\x04shot\x18\x02 \x01(\x05\x12\r\n\x05total\x18\x03 \x01(\x05\x12\x10\n\x08progress\x18\x04 \x01(\x02\" \n\x0f\x44ownloadRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bUploadReply\x12\x0e\n\x06length\x18\x01 \x01(\x03\"\x1e\n\rStatusRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1f\n\x0e\x45xecuteRequest\x12\r\n\x05token\x18\x01 \x01(\t\"!\n\rProgressReply\x12\x10\n\x08progress\x18\x01 \x01(\x02\"\x1f\n\x0e\x43leanUpRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x1d\n\x0bSanityReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1d\n\x0cResetRequest\x12\r\n\x05token\x18\x01 \x01(\t\"5\n\x12\x42\x61tchStatusRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\"e\n\x10\x42\x61tchStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0c\n\x04shot\x18\x02 \x01(\x05\x12\r\n\x05total\x18\x03 \x01(\x05\x12\x10\n\x08progress\x18\x04 \x01(\x02\x12\x12\n\nfileExists\x18\x05 \x01(\x08\"7\n\x14\x42\x61tchDownloadRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\"N\n\x19RemoteUploadSanityRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x10\n\x08\x66ilesize\x18\x03 \x01(\x03\"3\n\x11RemoteUploadReply\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0e\n\x06length\x18\x02 \x01(\x03\"0\n\rDeleteRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t2\xf5\r\n\nGaiaServer\x12-\n\x0bStatusCheck\x12\x0e.StatusRequest\x1a\x0c.StatusReply\"\x00\x12&\n\x05Reset\x12\r.ResetRequest\x1a\x0c.StatusReply\"\x00\x12\'\n\x0bSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12\"\n\x06Upload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12.\n\x07\x45xecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12(\n\x08\x44ownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12*\n\x07\x43leanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12*\n\x0ertmSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12%\n\trtmUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x31\n\nrtmExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12+\n\x0brtmDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12-\n\nrtmCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12/\n\x13\x65\x46orwardSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12*\n\x0e\x65\x46orwardUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x36\n\x0f\x65\x46orwardExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12\x30\n\x10\x65\x46orwardDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12\x32\n\x0f\x65\x46orwardCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12+\n\x0f\x65RTMSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12&\n\neRTMUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x32\n\x0b\x65RTMExecute\x12\x0f.ExecuteRequest\x1a\x0e.ProgressReply\"\x00\x30\x01\x12,\n\x0c\x65RTMDownload\x12\x10.DownloadRequest\x1a\x06.Chunk\"\x00\x30\x01\x12.\n\x0b\x65RTMCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12\x33\n\x17\x42\x61tchForwardSanityCheck\x12\x06.Chunk\x1a\x0c.SanityReply\"\x00(\x01\x12.\n\x12\x42\x61tchForwardUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x37\n\x14\x42\x61tchForwardInitExec\x12\x0f.ExecuteRequest\x1a\x0c.StatusReply\"\x00\x12>\n\x12\x42\x61tchForwardStatus\x12\x13.BatchStatusRequest\x1a\x11.BatchStatusReply\"\x00\x12>\n\x14\x42\x61tchForwardDownload\x12\x15.BatchDownloadRequest\x1a\x0b.BatchChunk\"\x00\x30\x01\x12\x36\n\x13\x42\x61tchForwardCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12@\n\x12rUploadSanityCheck\x12\x1a.RemoteUploadSanityRequest\x1a\x0c.SanityReply\"\x00\x12#\n\x07rUpload\x12\x06.Chunk\x1a\x0c.UploadReply\"\x00(\x01\x12\x30\n\x0erForwardUpload\x12\x06.Chunk\x1a\x12.RemoteUploadReply\"\x00(\x01\x12\x33\n\x10rForwardInitExec\x12\x0f.ExecuteRequest\x1a\x0c.StatusReply\"\x00\x12:\n\x0erForwardStatus\x12\x13.BatchStatusRequest\x1a\x11.BatchStatusReply\"\x00\x12:\n\x10rForwardDownload\x12\x15.BatchDownloadRequest\x1a\x0b.BatchChunk\"\x00\x30\x01\x12\x32\n\x0frForwardCleanUp\x12\x0f.CleanUpRequest\x1a\x0c.StatusReply\"\x00\x12)\n\x07rDelete\x12\x0e.DeleteRequest\x1a\x0c.StatusReply\"\x00\x62\x06proto3'
 )
 
 
@@ -535,6 +535,130 @@ _BATCHDOWNLOADREQUEST = _descriptor.Descriptor(
   serialized_end=620,
 )
 
+
+_REMOTEUPLOADSANITYREQUEST = _descriptor.Descriptor(
+  name='RemoteUploadSanityRequest',
+  full_name='RemoteUploadSanityRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='token', full_name='RemoteUploadSanityRequest.token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='filename', full_name='RemoteUploadSanityRequest.filename', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='filesize', full_name='RemoteUploadSanityRequest.filesize', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=622,
+  serialized_end=700,
+)
+
+
+_REMOTEUPLOADREPLY = _descriptor.Descriptor(
+  name='RemoteUploadReply',
+  full_name='RemoteUploadReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='RemoteUploadReply.status', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='length', full_name='RemoteUploadReply.length', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=702,
+  serialized_end=753,
+)
+
+
+_DELETEREQUEST = _descriptor.Descriptor(
+  name='DeleteRequest',
+  full_name='DeleteRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='token', full_name='DeleteRequest.token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='filename', full_name='DeleteRequest.filename', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=755,
+  serialized_end=803,
+)
+
 DESCRIPTOR.message_types_by_name['Chunk'] = _CHUNK
 DESCRIPTOR.message_types_by_name['BatchChunk'] = _BATCHCHUNK
 DESCRIPTOR.message_types_by_name['DownloadRequest'] = _DOWNLOADREQUEST
@@ -549,6 +673,9 @@ DESCRIPTOR.message_types_by_name['ResetRequest'] = _RESETREQUEST
 DESCRIPTOR.message_types_by_name['BatchStatusRequest'] = _BATCHSTATUSREQUEST
 DESCRIPTOR.message_types_by_name['BatchStatusReply'] = _BATCHSTATUSREPLY
 DESCRIPTOR.message_types_by_name['BatchDownloadRequest'] = _BATCHDOWNLOADREQUEST
+DESCRIPTOR.message_types_by_name['RemoteUploadSanityRequest'] = _REMOTEUPLOADSANITYREQUEST
+DESCRIPTOR.message_types_by_name['RemoteUploadReply'] = _REMOTEUPLOADREPLY
+DESCRIPTOR.message_types_by_name['DeleteRequest'] = _DELETEREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Chunk = _reflection.GeneratedProtocolMessageType('Chunk', (_message.Message,), {
@@ -649,6 +776,27 @@ BatchDownloadRequest = _reflection.GeneratedProtocolMessageType('BatchDownloadRe
   })
 _sym_db.RegisterMessage(BatchDownloadRequest)
 
+RemoteUploadSanityRequest = _reflection.GeneratedProtocolMessageType('RemoteUploadSanityRequest', (_message.Message,), {
+  'DESCRIPTOR' : _REMOTEUPLOADSANITYREQUEST,
+  '__module__' : 'gaia_pb2'
+  # @@protoc_insertion_point(class_scope:RemoteUploadSanityRequest)
+  })
+_sym_db.RegisterMessage(RemoteUploadSanityRequest)
+
+RemoteUploadReply = _reflection.GeneratedProtocolMessageType('RemoteUploadReply', (_message.Message,), {
+  'DESCRIPTOR' : _REMOTEUPLOADREPLY,
+  '__module__' : 'gaia_pb2'
+  # @@protoc_insertion_point(class_scope:RemoteUploadReply)
+  })
+_sym_db.RegisterMessage(RemoteUploadReply)
+
+DeleteRequest = _reflection.GeneratedProtocolMessageType('DeleteRequest', (_message.Message,), {
+  'DESCRIPTOR' : _DELETEREQUEST,
+  '__module__' : 'gaia_pb2'
+  # @@protoc_insertion_point(class_scope:DeleteRequest)
+  })
+_sym_db.RegisterMessage(DeleteRequest)
+
 
 
 _GAIASERVER = _descriptor.ServiceDescriptor(
@@ -658,8 +806,8 @@ _GAIASERVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=623,
-  serialized_end=1983,
+  serialized_start=806,
+  serialized_end=2587,
   methods=[
   _descriptor.MethodDescriptor(
     name='StatusCheck',
@@ -937,6 +1085,86 @@ _GAIASERVER = _descriptor.ServiceDescriptor(
     index=27,
     containing_service=None,
     input_type=_CLEANUPREQUEST,
+    output_type=_STATUSREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rUploadSanityCheck',
+    full_name='GaiaServer.rUploadSanityCheck',
+    index=28,
+    containing_service=None,
+    input_type=_REMOTEUPLOADSANITYREQUEST,
+    output_type=_SANITYREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rUpload',
+    full_name='GaiaServer.rUpload',
+    index=29,
+    containing_service=None,
+    input_type=_CHUNK,
+    output_type=_UPLOADREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rForwardUpload',
+    full_name='GaiaServer.rForwardUpload',
+    index=30,
+    containing_service=None,
+    input_type=_CHUNK,
+    output_type=_REMOTEUPLOADREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rForwardInitExec',
+    full_name='GaiaServer.rForwardInitExec',
+    index=31,
+    containing_service=None,
+    input_type=_EXECUTEREQUEST,
+    output_type=_STATUSREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rForwardStatus',
+    full_name='GaiaServer.rForwardStatus',
+    index=32,
+    containing_service=None,
+    input_type=_BATCHSTATUSREQUEST,
+    output_type=_BATCHSTATUSREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rForwardDownload',
+    full_name='GaiaServer.rForwardDownload',
+    index=33,
+    containing_service=None,
+    input_type=_BATCHDOWNLOADREQUEST,
+    output_type=_BATCHCHUNK,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rForwardCleanUp',
+    full_name='GaiaServer.rForwardCleanUp',
+    index=34,
+    containing_service=None,
+    input_type=_CLEANUPREQUEST,
+    output_type=_STATUSREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='rDelete',
+    full_name='GaiaServer.rDelete',
+    index=35,
+    containing_service=None,
+    input_type=_DELETEREQUEST,
     output_type=_STATUSREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
