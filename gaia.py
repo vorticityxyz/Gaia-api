@@ -36,7 +36,6 @@ EL_SANITY_FILE = "_eparameters.npy"
 BF_SANILTY_FILE = "_bfparameters.npy"
 RBF_SETUP_FILE = '_rbf_setup.npz'
 
-#SERVER_ADDRESS = 'localhost:8888'
 DISPATCH_SERVER = 'vorticity.cloud:443'
 
 def get_file_chunks(filename):
@@ -108,8 +107,7 @@ class GaiaClient:
         dispatch_client = DispatchClient(DISPATCH_SERVER)
         response = dispatch_client.DispatchServerAddressRequest(token)
         if (response.status == codes.SUCCESS):
-            #address = response.address
-            address = 'localhost:8888'
+            address = response.address
             with open('server.crt', 'rb') as f:
                 creds = grpc.ssl_channel_credentials(f.read())
             channel = grpc.secure_channel(address, creds,
