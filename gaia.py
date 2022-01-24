@@ -648,7 +648,7 @@ def mf28pml(model, shot, shotxyz, recxxyyz, deltas, pml):
     config_int = np.array([shotxyz[0], shotxyz[1], shotxyz[2],
                            recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3], recxxyyz[4],
                            act, acs, abc,
-                           pml[0], pml[1],    # no pml
+                           pml[0], pml[1],    
                            cnum], dtype=np.int32)
     config_float = deltas
 
@@ -718,6 +718,7 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
     act = 2 
     acs = 8
     abc = 1
+    cnum = 1     # number of accelerator cards to use
 
     # Validate that user input is usable
     validate.model(model)
@@ -730,13 +731,13 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
 
     sanity_data = np.array([model.shape[0], model.shape[1], model.shape[2], shot.shape[0],
                             recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3],
-                            act, abc], dtype=np.int32)
+                            act, abc, cnum], dtype=np.int32)
 
     config_int = np.array([shotxyz[0], shotxyz[1], shotxyz[2],
                            recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3], recxxyyz[4],
                            act, acs, abc,
-                           pml[0], pml[1],    # no pml
-                           ], dtype=np.int32)
+                           pml[0], pml[1],
+                           cnum], dtype=np.int32)
     config_float = deltas
 
     print("Starting gaia process.")
@@ -797,6 +798,96 @@ def rtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
     os.remove(SANITY_FILE)
 
     return update
+
+# Acoustic multi-card RTM operator
+def mrtm28pml(model, shot, traces, shotxyz, recxxyyz, deltas, pml):
+    
+    # temporal accuracy 2, spacial accuracy 8, with pml
+    act = 2 
+    acs = 8
+    abc = 1
+    cnum = 4     # number of accelerator cards to use
+
+    # Validate that user input is usable
+    validate.multicard_model(model, cnum)
+    validate.shot(shot)
+    validate.traces(traces, shot, model)
+    validate.shotxyz(model, shotxyz)
+    validate.recxxyyz(model, recxxyyz)
+    validate.deltas(deltas)
+    validate.pml(model, pml)
+
+    sanity_data = np.array([model.shape[0], model.shape[1], model.shape[2], shot.shape[0],
+                            recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3],
+                            act, abc, cnum], dtype=np.int32)
+
+    config_int = np.array([shotxyz[0], shotxyz[1], shotxyz[2],
+                           recxxyyz[0], recxxyyz[1], recxxyyz[2], recxxyyz[3], recxxyyz[4],
+                           act, acs, abc,
+                           pml[0], pml[1],
+                           cnum], dtype=np.int32)
+    config_float = deltas
+
+    print("Starting gaia process.")
+
+    # Save data to disk for transfer
+    np.savez(RTM_FILE, model=np.square(model), shot=shot, traces=traces, config_int=config_int, config_float=config_float)
+    np.save(SANITY_FILE, sanity_data)
+
+    # get the token for identification to server
+    token = tokens.USER_TOKEN
+
+    # Launch client
+    client = GaiaClient(token)
+
+    # Do a quick sanity check to ensure simulation parameters are within server bounds
+    status = client.rtmSanityCheck(SANITY_FILE)
+    if (status == codes.ERROR):
+        raise Exception("This simulation will take too many resources. Try again with a lower resolution, trace size and/or timesteps.")
+
+    # Check if server is ready for upload and if so upload file
+    status = client.StatusCheck(token)
+    if (status == codes.UPLOAD_READY):
+        file_length = client.rtmUpload(RTM_FILE)
+        if (file_length != os.path.getsize(RTM_FILE)):
+            raise Exception("Something went wrong with data upload to server. Try again in a bit or if problem persists, contact Vorticity.")
+    else:
+        raise Exception("Server busy. Wait for the original task to complete.")
+
+    # Now instigate execution
+    status = client.StatusCheck(token)
+    if (status == codes.RTM_READY):
+        final_progress_value = client.rtmExecute(token)
+        if (final_progress_value != 1.0):
+            raise Exception("Something went wrong. Try again in a bit and if problem persists, contact Vorticity.")
+    else:
+        raise Exception("Server not ready. Try again in a few minites.")
+
+    # Download shot_record
+    status = client.StatusCheck(token)
+    if (status == codes.DOWNLOAD_READY):
+        client.rtmDownload(token, UPDATE_FILE)
+    else:
+        raise Exception("Server not ready. Try again in a few minites. If the problem persists, contact Vorticity.") 
+
+    # Clean up remote server
+    status = client.StatusCheck(token)
+    if (status == codes.CLEANUP_READY):
+        status = client.rtmCleanUp(token)
+        if (status == codes.SUCCESS):
+            print("Process complete!")
+        else:
+            print("Process did not complete as intended. Contact Vorticity.")
+
+    # return data to user
+    update = np.load(UPDATE_FILE)
+    os.remove(RTM_FILE)
+    os.remove(UPDATE_FILE)
+    os.remove(SANITY_FILE)
+
+    return update
+
+
 
 # Elastic forward model operator
 def ef18abc(vp, vs, rho, shot, shotxyz, recxxyyz, deltas, abc):
