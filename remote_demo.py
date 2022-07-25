@@ -33,6 +33,7 @@
 # Licence: MIT
 
 import numpy as np
+from pathlib import Path
 import gaia
 
 # Generate shot profile
